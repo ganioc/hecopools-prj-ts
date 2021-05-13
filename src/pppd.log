@@ -1,0 +1,66 @@
+root@dolphin-fvd-p1:/etc/ppp/peers # pppd call F0x
+F0xX-chat-connect         F0xX-chat-disconnect      F0xX-ppp-call
+d call F0xX-ppp-call                                                          <
+abort on (BUSY)
+abort on (NO CARRIER)
+abort on (NO DIALTONE)
+abort on (ERROR)
+abort on (NO ANSWER)
+timeout set to 30 seconds
+send (AT^M)
+expect (OK)
+^M
+OK
+ -- got it
+
+send (ATE0^M)
+expect (OK)
+^M
+^M
+OK
+ -- got it
+
+send (ATI^M)
+expect (OK)
+^M
+^M
+Manufacturer: CMCC^M
+Model: F03X^M
+Revision: PMTH2S21^M
+SVN: 01^M
+IMEI: 359047100085404^M
++GCAP: +CGSM^M
+^M
+OK
+ -- got it
+
+send (AT+CPIN?^M)
+expect (READY)
+^M
+^M
++CPIN: READY
+ -- got it
+
+send (AT^M)
+expect (OK)
+^M
+^M
+OK
+ -- got it
+
+send (AT+CGDCONT=1,"IP","CMNET",,0,0^M)
+expect (OK)
+^M
+^M
+OK
+ -- got it
+
+send (ATD*99***1#^M)
+expect (CONNECT)
+^M
+^M
+OK^M
+^M
+ERROR
+ -- failed
+Failed (ERROR)
