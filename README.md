@@ -6,6 +6,7 @@ brick-lib is the lib for communication.
 
 ```
 Need a local light weight sql database to store the data.?
+    sqlite3
 
 ```
 
