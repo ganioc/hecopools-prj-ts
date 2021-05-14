@@ -14,5 +14,5 @@
     "esModuleInterop": true,            
     "resolveJsonModule": true
   },
-  "include": ["lib/**/*", "test/**/*"]
+  "include": ["src/**/*", "test/**/*"]
 }
