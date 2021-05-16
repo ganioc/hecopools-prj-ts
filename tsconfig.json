@@ -12,7 +12,7 @@
     "skipLibCheck": true /* Skip type checking of declaration files. */,
     "forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */,
     "esModuleInterop": true,            
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
   },
   "include": ["src/**/*", "test/**/*"]
 }

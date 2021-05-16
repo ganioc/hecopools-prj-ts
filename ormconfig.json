@@ -4,7 +4,7 @@
    "synchronize": true,
    "logging": false,
    "entities": [
-      "src/entity/**/*.ts"
+      "out/src/entity/**/*.js"
    ],
    "migrations": [
       "src/migration/**/*.ts"
