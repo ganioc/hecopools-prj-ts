@@ -14,7 +14,16 @@ Need a local light weight sql database to store the data.?
 ```
 
 
-## 
+## Data Structure
+
+```
+DefiApp -> Contract  (one to many)
+         pool
+         pair
+
+
+
+```
 
 ## Contract Address
 ### mdex hecoSwap
