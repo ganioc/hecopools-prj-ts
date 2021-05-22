@@ -18,12 +18,18 @@ async function toCreate(connection: Connection ) {
 async function toRead(connection: Connection){
     const cateRepos = connection.getRepository(Category)
 
-    let result = await    cateRepos.findAndCount();
+    let result = await    cateRepos.findAndCount({
+        relations:['questions']
+    });
     console.log(result)
-    
+
     const quesRepos = connection.getRepository(Question)
-    let questions = await quesRepos.findAndCount()
+    let questions = await quesRepos.findAndCount({
+        relations:['categories']
+    })
     console.log(questions)
+
+
 }
 
 async function main(){

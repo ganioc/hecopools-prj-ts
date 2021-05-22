@@ -1,36 +1,36 @@
-import { createConnection } from "typeorm";
+import { Connection, createConnection } from "typeorm";
 import { DefiApp } from "../../src/entity/DefiApp";
 import "reflect-metadata";
 import { SmartContract } from "../../src/entity/SmartContract";
 
-
- async function main(){
-    console.log('defi mdex')
-    const connection = await createConnection(); 
-
-    // await connection.synchronize()
-
+async function toCreate(connection: Connection) {
+    console.log('toCreate')
+}
+async function toRead(connection: Connection){
+    console.log('toRead')
     const appDepository = connection.getRepository(DefiApp)
     const contractDepository = connection.getRepository(SmartContract)
 
-    let apps = await appDepository.findAndCount();
+    let apps = await appDepository.findAndCount({
+        relations:['contracts']
+    });
     console.log(apps)
+    for(let app of apps){
+        console.log(app)
+    }
 
-    let app1 = await appDepository.findOne('MDEX')
-    console.log(app1.contracts)
-
-    let contracts = await contractDepository.findAndCount();
+    let contracts = await contractDepository.findAndCount({
+        relations:['defiApp']
+    });
     console.log(contracts)
+    for(let contract of contracts){
+        console.log(contract)
+    }
+}
+async function main() {
+    console.log('defi mdex')
+    const connection = await createConnection();
 
-    let app = new DefiApp();
-    app.name = 'MDEX'
-    app.url = 'https://mdex.com/'
-    app.descr = 'DEX'
-    // app.name = 'BXH'
-    // app.url = 'https://bxh.com'
-    // app.descr = 'DEX'
-
-    // let result = await appDepository.save(app);
-    // console.log(result)
+    toRead(connection)
 }
 main()
