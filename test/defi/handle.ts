@@ -40,6 +40,18 @@ async function removeEntityByName<Type>(connection: Connection, target: EntityTa
         .where("name = :name", { name: name})
         .execute()
 }
+async function addDefaultEntity<Type>(connection: Connection, target: EntityTarget<Type>){
+    let nameTarget  = getClassName(target)
+    console.log('\naddDefaultEntity: ', nameTarget)
+
+    if( nameTarget === 'DefiApp'){
+        await toAddApp(connection, 'BXH', 'https://bxh.com', '笨小孩')
+        await toAddApp(connection, 'BACK', 'https://back.finance/#/home', 'BACK')
+        await toAddApp(connection, 'MDEX', 'https://mdex.com', 'DEX')
+    }else{
+        console.log('Not defined: ', nameTarget)
+    }
+}
 async function toRead(connection: Connection) {
     console.log('\ntoRead')
     const appDepository = connection.getRepository(DefiApp)
@@ -139,6 +151,9 @@ async function handleRemoveEntityByName(connection: Connection, entityName:strin
 
     console.log('---- Done ----')
 }
+async function handleAddDefaultEntity(connection: Connection, entity: string | unknown){
+    await addDefaultEntity(connection, getEntityByName(entity as string))
+}
 async function main() {
     // console.log('defi mdex')
     const conn = await createConnection();
@@ -190,8 +205,8 @@ async function main() {
     yargs.version('0.0.1')
 
     yargs.command({
-        command: 'add',
-        describe: 'Add command',
+        command: 'addDefault',
+        describe: 'Add default command',
         builder: {
             entity: {
                 describe: 'Entity Name',
@@ -201,6 +216,7 @@ async function main() {
         },
         handler(argv) {
             console.log('Add ', argv.entity)
+            handleAddDefaultEntity(conn, argv.entity)
         }
 
     })
