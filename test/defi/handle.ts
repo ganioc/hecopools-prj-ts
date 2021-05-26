@@ -5,6 +5,7 @@ import { SmartContract } from "../../src/entity/SmartContract";
 import { Pool } from "../../src/entity/Pool";
 import { Pair } from "../../src/entity/Pair";
 import * as yargs from 'yargs';
+import { connect } from "http2";
 
 
 async function toCreate(connection: Connection) {
@@ -31,24 +32,51 @@ async function readEntity<Type>(connection: Connection, target: EntityTarget<Typ
         console.log(item)
     }
 }
-async function removeEntityByName<Type>(connection: Connection, target: EntityTarget<Type>, name:string) {
+async function removeEntityByName<Type>(connection: Connection, target: EntityTarget<Type>, name: string) {
     console.log('\nremoveEntity: ', getClassName(target))
     await connection
         .createQueryBuilder()
         .delete()
         .from(target)
-        .where("name = :name", { name: name})
+        .where("name = :name", { name: name })
         .execute()
 }
-async function addDefaultEntity<Type>(connection: Connection, target: EntityTarget<Type>){
-    let nameTarget  = getClassName(target)
+async function addDefaultEntity<Type>(connection: Connection, target: EntityTarget<Type>) {
+    let nameTarget = getClassName(target)
     console.log('\naddDefaultEntity: ', nameTarget)
 
-    if( nameTarget === 'DefiApp'){
+    if (nameTarget === 'DefiApp') {
         await toAddApp(connection, 'BXH', 'https://bxh.com', '笨小孩')
         await toAddApp(connection, 'BACK', 'https://back.finance/#/home', 'BACK')
         await toAddApp(connection, 'MDEX', 'https://mdex.com', 'DEX')
-    }else{
+    } else if (nameTarget === 'SmartContract') {
+
+        await toAddContract(connection, 'MDEX', '0xED7d5F38C79115ca12fe6C0041abb22F0A06C300', 'MdexRouter', 'MdexRouter')
+
+        await toAddContract(connection, 'BXH', '0x00eFB96dBFE641246E961b472C0C3fC472f6a694', 'UniswapV2Router02', 'UniswapV2Router02')
+
+        await toAddContract(connection, 'BXH',
+            '0xe0367ec2bd4Ba22B1593E4fEFcB91D29DE6C512a',
+            'UniswapV2Factory', 'UniswapV2Factory')
+
+        await toAddContract(connection, 'BACK',
+            '0x51b4fa29dA61715d3384Be9f8a7033bD349Ef629',
+            'BackConfig', 'BackConfig')
+
+        await toAddContract(connection, 'BACK',
+            '0x3fcB7AF59a84d79F4Ce466E39e62183AC62C0059',
+            'BackPairFactory', 'BackPairFactory')
+
+        await toAddContract(connection, 'BACK',
+            '0xCCE77dCbCDEcC43520144a030CA15B38f6711832',
+            'BackPoolFactory', 'BackPoolFactory')
+
+        await toAddContract(connection, 'BACK',
+            '0xa2B27EaC08d1E792F2CE2d99C0331D0E495c4D80',
+            'BackReward', 'BackReward')
+    }
+
+    else {
         console.log('Not defined: ', nameTarget)
     }
 }
@@ -109,49 +137,49 @@ async function addApp(conn: Connection) {
     await toAddApp(conn, 'MDEX', 'https://mdex.com', 'DEX')
 
 }
-function getClassName<Type>(target: EntityTarget<Type>):string {
+function getClassName<Type>(target: EntityTarget<Type>): string {
     // 
     return target.toString().split(' ')[1]
 }
-function getEntityByName<Type>(name:string):EntityTarget<Type>{
+function getEntityByName<Type>(name: string): EntityTarget<Type> {
     let lowerCase = name.toLowerCase();
 
-    if(lowerCase === 'defiapp' ){
+    if (lowerCase === 'defiapp') {
         return DefiApp;
-    }else if(lowerCase === 'smartcontract'){
+    } else if (lowerCase === 'smartcontract') {
         return SmartContract;
-    }else if(lowerCase === 'pool'){
+    } else if (lowerCase === 'pool') {
         return Pool;
-    }else if(lowerCase === 'pair'){
+    } else if (lowerCase === 'pair') {
         return Pair;
-    }else{
-        throw new Error('Unknown: '+ name)
+    } else {
+        throw new Error('Unknown: ' + name)
     }
 }
-function getRelationByName(name:string):string[]{
+function getRelationByName(name: string): string[] {
     let lowerCase = name.toLowerCase();
 
-    if(lowerCase === 'defiapp' ){
+    if (lowerCase === 'defiapp') {
         return ['contracts', 'pairs', 'pools'];
-    }else if(lowerCase === 'smartcontract'){
+    } else if (lowerCase === 'smartcontract') {
+        return ['defiApp'];
+    } else if (lowerCase === 'pool') {
         return [];
-    }else if(lowerCase === 'pool'){
+    } else if (lowerCase === 'pair') {
         return [];
-    }else if(lowerCase === 'pair'){
-        return [];
-    }else{
-        throw new Error('Unknown: '+ name)
+    } else {
+        throw new Error('Unknown: ' + name)
     }
 }
-async function handleReadEntity(connection:Connection, name: string | unknown){
-    await readEntity(connection, getEntityByName(name as string),getRelationByName(name as string))
+async function handleReadEntity(connection: Connection, name: string | unknown) {
+    await readEntity(connection, getEntityByName(name as string), getRelationByName(name as string))
 }
-async function handleRemoveEntityByName(connection: Connection, entityName:string|unknown , name:string|unknown){
+async function handleRemoveEntityByName(connection: Connection, entityName: string | unknown, name: string | unknown) {
     await removeEntityByName(connection, getEntityByName(entityName as string), name as string)
 
     console.log('---- Done ----')
 }
-async function handleAddDefaultEntity(connection: Connection, entity: string | unknown){
+async function handleAddDefaultEntity(connection: Connection, entity: string | unknown) {
     await addDefaultEntity(connection, getEntityByName(entity as string))
 }
 async function main() {
