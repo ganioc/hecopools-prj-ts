@@ -31,6 +31,15 @@ async function readEntity<Type>(connection: Connection, target: EntityTarget<Typ
         console.log(item)
     }
 }
+async function removeEntityByName<Type>(connection: Connection, target: EntityTarget<Type>, name:string) {
+    console.log('\nremoveEntity: ', getClassName(target))
+    await connection
+        .createQueryBuilder()
+        .delete()
+        .from(target)
+        .where("name = :name", { name: name})
+        .execute()
+}
 async function toRead(connection: Connection) {
     console.log('\ntoRead')
     const appDepository = connection.getRepository(DefiApp)
@@ -125,6 +134,11 @@ function getRelationByName(name:string):string[]{
 async function handleReadEntity(connection:Connection, name: string | unknown){
     await readEntity(connection, getEntityByName(name as string),getRelationByName(name as string))
 }
+async function handleRemoveEntityByName(connection: Connection, entityName:string|unknown , name:string|unknown){
+    await removeEntityByName(connection, getEntityByName(entityName as string), name as string)
+
+    console.log('---- Done ----')
+}
 async function main() {
     // console.log('defi mdex')
     const conn = await createConnection();
@@ -191,7 +205,7 @@ async function main() {
 
     })
     yargs.command({
-        command: 'remove',
+        command: 'removeByName',
         describe: 'Remove command',
         builder: {
             entity: {
@@ -207,6 +221,7 @@ async function main() {
         },
         handler(argv) {
             console.log('Remove ', argv.entity)
+            handleRemoveEntityByName(conn, argv.entity, argv.name)
         }
 
     })
