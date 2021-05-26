@@ -16,7 +16,7 @@ Need a local light weight sql database to store the data.?
 
 ## Data Structure
 
-```
+```javascript
 DefiApp -> Contract  (one to many)
          pool
          pair
@@ -24,6 +24,30 @@ DefiApp -> Contract  (one to many)
 Try something as FILO queue:
 
 
+Pair=Where token pair is stored, support swap()
+Pool=Where MDX-token is deposited, lpToken, 
+        Single LP, BXH
+        Multi LP, LP token plus BXH
+
+// Info of each pool. BXH
+    struct PoolInfo {
+        IERC20 lpToken;           // Address of LP token contract.
+        uint256 allocPoint;       // How many allocation points assigned to this pool. BXHs to distribute per block.
+        uint256 lastRewardBlock;  // Last block number that BXHs distribution occurs.
+        uint256 accBXHPerShare; // Accumulated BXHs per share, times 1e12.
+        uint256 accMultLpPerShare; //Accumulated multLp per share
+        uint256 totalAmount;    // Total amount of current pool deposit.
+    }
+
+    // Info of each pool. MDX
+    struct PoolInfo {
+        IERC20 lpToken;           // Address of LP token contract.
+        uint256 allocPoint;       // How many allocation points assigned to this pool. MDXs to distribute per block.
+        uint256 lastRewardBlock;  // Last block number that MDXs distribution occurs.
+        uint256 accMdxPerShare; // Accumulated MDXs per share, times 1e12.
+        uint256 accMultLpPerShare; //Accumulated multLp per share
+        uint256 totalAmount;    // Total amount of current pool deposit.
+    }
 ```
 
 ## Contract Address

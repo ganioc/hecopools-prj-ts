@@ -101,8 +101,8 @@ async function main() {
 
     // await toFindContracts(conn, 'BXH')
 
-    await toFindContracts(conn, 'BXH')
+    // await toFindContracts(conn, 'BXH')
 
-    // await toRead(conn)
+    await toRead(conn)
 }
 main()
