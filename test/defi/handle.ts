@@ -5,7 +5,7 @@ import { SmartContract } from "../../src/entity/SmartContract";
 import { Pool } from "../../src/entity/Pool";
 import { Pair } from "../../src/entity/Pair";
 import * as yargs from 'yargs';
-import { connect } from "http2";
+import { updatePair as updateBXHPair} from '../update/updatebxh'
 
 
 async function toCreate(connection: Connection) {
@@ -77,7 +77,25 @@ async function addDefaultEntity<Type>(connection: Connection, target: EntityTarg
     }
 
     else {
-        console.log('Not defined: ', nameTarget)
+        console.log('Not support: ', nameTarget)
+    }
+}
+async function updateDefaultPair(connection: Connection, name:string){
+    let lowerCase = name.toLowerCase();
+
+    if(lowerCase === 'bxh'){
+        return updateBXHPair(connection, name)
+    }
+
+}
+async function updateDefaultEntity<Type>(connection:Connection, target: EntityTarget<Type>, name:string){
+    let nameTarget = getClassName(target)
+    console.log('\nupdateDefaultEntity ', nameTarget, name)
+
+    if(nameTarget === 'Pair'){
+        await updateDefaultPair(connection, name);
+    }else{
+        console.error('Not support: ', nameTarget)
     }
 }
 async function toRead(connection: Connection) {
@@ -182,6 +200,9 @@ async function handleRemoveEntityByName(connection: Connection, entityName: stri
 async function handleAddDefaultEntity(connection: Connection, entity: string | unknown) {
     await addDefaultEntity(connection, getEntityByName(entity as string))
 }
+async function handleUpdateDefaultEntity(connection:Connection, entity: string | unknown, name:string | unknown){
+    await updateDefaultEntity(connection, getEntityByName(entity as string), name as string)
+}
 async function main() {
     // console.log('defi mdex')
     const conn = await createConnection();
@@ -231,6 +252,28 @@ async function main() {
     // await readEntity(conn, Pair, [])
 
     yargs.version('0.0.1')
+
+    yargs.command({
+        command: 'updateDefault',
+        describe: 'Update default command',
+        builder: {
+            entity: {
+                describe: 'Entity Name',
+                demandOption: true,
+                type: 'string'
+            },
+            name:{
+                describe: 'DefiApp name',
+                demandOption: true,
+                type: 'string'
+            }
+        },
+        handler(argv) {
+            console.log('UpdateDefault ', argv.entity, argv.name)
+            handleUpdateDefaultEntity(conn, argv.entity, argv.name)
+        }
+
+    })
 
     yargs.command({
         command: 'addDefault',

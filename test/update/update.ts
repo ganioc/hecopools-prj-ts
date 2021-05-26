@@ -31,7 +31,7 @@ async function main(){
     const connection = await createConnection();
 
     // await read(connection)
-    await updatePair(connection, walletProvider)
+    // await updatePair(connection, walletProvider)
 }
 
 main()

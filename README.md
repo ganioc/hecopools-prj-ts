@@ -24,11 +24,16 @@ D
 使用函数来实现数据库的手动维护
 
 % node out/test/defi/handle.js list --entity  DefiApp
+% node out/test/defi/handle.js list --entity  SmartContract
 
 % node out/test/defi/handle.js removeByName  --entity DefiApp --name BXH 
 
 % node out/test/defi/handle.js addDefault  --entity DefiApp
 
+% node out/test/defi/handle.js addDefault  --entity SmartContract
+
+
+% node out/test/defi/handle.js updateDefault  --entity  Pair  --name BXH
 
 ```
 
