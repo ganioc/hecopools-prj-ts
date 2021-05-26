@@ -1,12 +1,16 @@
-import { Connection, createConnection } from "typeorm";
+import { Connection, createConnection, EntityTarget } from "typeorm";
 import { DefiApp } from "../../src/entity/DefiApp";
 import "reflect-metadata";
 import { SmartContract } from "../../src/entity/SmartContract";
+import { Pool } from "../../src/entity/Pool";
+import { Pair } from "../../src/entity/Pair";
+import * as yargs from 'yargs';
+import { describe } from "yargs";
 
 async function toCreate(connection: Connection) {
     console.log('toCreate')
 }
-async function toAddApp(connection: Connection,name: string, url:string, desc: string){
+async function toAddApp(connection: Connection, name: string, url: string, desc: string) {
     console.log('toAddApp: ', name)
     let app = new DefiApp();
     app.name = name;
@@ -16,29 +20,43 @@ async function toAddApp(connection: Connection,name: string, url:string, desc: s
     console.log(result)
     console.log('toAddApp done.')
 }
-async function toRead(connection: Connection){
+function getClassName<Type>(target: EntityTarget<Type>) {
+    // 
+    return target.toString().split(' ')[1]
+}
+async function readEntity<Type>(connection: Connection, target: EntityTarget<Type>, relationLst: string[]) {
+    console.log('\nreadEntity: ', getClassName(target))
+    const repository = connection.getRepository(target);
+    const items = await repository.findAndCount({
+        relations: relationLst
+    })
+    for (let item of items) {
+        console.log(item)
+    }
+}
+async function toRead(connection: Connection) {
     console.log('\ntoRead')
     const appDepository = connection.getRepository(DefiApp)
     const contractDepository = connection.getRepository(SmartContract)
 
     let apps = await appDepository.findAndCount({
-        relations:['contracts']
+        relations: ['contracts']
     });
     // console.log(apps)
 
-    for(let app of apps){
+    for (let app of apps) {
         console.log(app)
     }
 
     let contracts = await contractDepository.findAndCount({
-        relations:['defiApp']
+        relations: ['defiApp']
     });
     // console.log(contracts)
-    for(let contract of contracts){
+    for (let contract of contracts) {
         console.log(contract)
     }
 }
-async function toAddContract(connection: Connection, appStr:string, address: string, desc: string, name: string ){
+async function toAddContract(connection: Connection, appStr: string, address: string, desc: string, name: string) {
     console.log('\naddContract')
     const appRepos = connection.getRepository(DefiApp);
     const app = await appRepos.findOne(appStr)
@@ -46,7 +64,7 @@ async function toAddContract(connection: Connection, appStr:string, address: str
     let contract = new SmartContract();
     contract.address = address
     contract.defiApp = app
-    contract.desc = desc 
+    contract.desc = desc
     contract.name = name
 
     let result = await connection.manager.save(contract);
@@ -54,23 +72,31 @@ async function toAddContract(connection: Connection, appStr:string, address: str
 
     console.log('addContract done.')
 }
-async function toFindContracts(connection:Connection, appstr:string){
+async function toFindContracts(connection: Connection, appstr: string) {
     console.log('\ntoFindContracts()')
     const app = await connection.getRepository(DefiApp)
-                    .findOne({
-                        relations:['contracts'],
-                        where:{ name: appstr }
-                    })
+        .findOne({
+            relations: ['contracts'],
+            where: { name: appstr }
+        })
     console.log(app)
     // console.log(app.contracts)
     console.log('\ntoFindContracts() done.')
 }
+
+async function addApp(conn: Connection) {
+    console.log("\naddApp")
+    await toAddApp(conn, 'BXH', 'https://bxh.com', '笨小孩')
+    await toAddApp(conn, 'BACK', 'https://back.finance/#/home', 'BACK')
+    await toAddApp(conn, 'MDEX', 'https://mdex.com', 'DEX')
+
+}
+
 async function main() {
     console.log('defi mdex')
     const conn = await createConnection();
 
-    // await toAddApp(conn, 'BXH','https://bxh.com','笨小孩')
-    // await toAddApp(conn, 'BACK', 'https://back.finance/#/home', 'BACK')
+
 
     // await toAddContract(conn, 'MDEX', '0xED7d5F38C79115ca12fe6C0041abb22F0A06C300','MdexRouter','MdexRouter')
 
@@ -103,6 +129,34 @@ async function main() {
 
     // await toFindContracts(conn, 'BXH')
 
-    await toRead(conn)
+    // await toRead(conn)
+
+    // await addApp(conn);
+
+
+
+    // await readEntity(conn, DefiApp,["contracts", "pairs", "pools"]);
+    // await readEntity(conn, SmartContract,[]);
+    // await readEntity(conn, Pool, [])
+    // await readEntity(conn, Pair, [])
+
+    yargs.command({
+        command: 'add',
+        describe: 'Add command',
+        builder: {
+            first: {
+                describe: 'First number',
+                demandOption: true,
+                type: 'number'
+            }
+        },
+        handler(argv) {
+            console.log('Add ', argv.first)
+        }
+
+    })
+
+    yargs.parse();
+
 }
 main()

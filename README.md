@@ -12,7 +12,18 @@ Need a local light weight sql database to store the data.?
     
 
 ```
+## Usage
 
+```
+使用handle.ts来手动更新数据库
+C
+R
+U
+D
+
+使用函数来实现数据库的手动维护
+
+```
 
 ## Data Structure
 
