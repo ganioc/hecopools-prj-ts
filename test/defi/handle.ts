@@ -5,7 +5,7 @@ import { SmartContract } from "../../src/entity/SmartContract";
 import { Pool } from "../../src/entity/Pool";
 import { Pair } from "../../src/entity/Pair";
 import * as yargs from 'yargs';
-import { describe } from "yargs";
+
 
 async function toCreate(connection: Connection) {
     console.log('toCreate')
@@ -20,10 +20,7 @@ async function toAddApp(connection: Connection, name: string, url: string, desc:
     console.log(result)
     console.log('toAddApp done.')
 }
-function getClassName<Type>(target: EntityTarget<Type>) {
-    // 
-    return target.toString().split(' ')[1]
-}
+
 async function readEntity<Type>(connection: Connection, target: EntityTarget<Type>, relationLst: string[]) {
     console.log('\nreadEntity: ', getClassName(target))
     const repository = connection.getRepository(target);
@@ -91,9 +88,45 @@ async function addApp(conn: Connection) {
     await toAddApp(conn, 'MDEX', 'https://mdex.com', 'DEX')
 
 }
+function getClassName<Type>(target: EntityTarget<Type>):string {
+    // 
+    return target.toString().split(' ')[1]
+}
+function getEntityByName<Type>(name:string):EntityTarget<Type>{
+    let lowerCase = name.toLowerCase();
 
+    if(lowerCase === 'defiapp' ){
+        return DefiApp;
+    }else if(lowerCase === 'smartcontract'){
+        return SmartContract;
+    }else if(lowerCase === 'pool'){
+        return Pool;
+    }else if(lowerCase === 'pair'){
+        return Pair;
+    }else{
+        throw new Error('Unknown: '+ name)
+    }
+}
+function getRelationByName(name:string):string[]{
+    let lowerCase = name.toLowerCase();
+
+    if(lowerCase === 'defiapp' ){
+        return ['contracts', 'pairs', 'pools'];
+    }else if(lowerCase === 'smartcontract'){
+        return [];
+    }else if(lowerCase === 'pool'){
+        return [];
+    }else if(lowerCase === 'pair'){
+        return [];
+    }else{
+        throw new Error('Unknown: '+ name)
+    }
+}
+async function handleReadEntity(connection:Connection, name: string | unknown){
+    await readEntity(connection, getEntityByName(name as string),getRelationByName(name as string))
+}
 async function main() {
-    console.log('defi mdex')
+    // console.log('defi mdex')
     const conn = await createConnection();
 
 
@@ -140,18 +173,57 @@ async function main() {
     // await readEntity(conn, Pool, [])
     // await readEntity(conn, Pair, [])
 
+    yargs.version('0.0.1')
+
     yargs.command({
         command: 'add',
         describe: 'Add command',
         builder: {
-            first: {
-                describe: 'First number',
+            entity: {
+                describe: 'Entity Name',
                 demandOption: true,
-                type: 'number'
+                type: 'string'
             }
         },
         handler(argv) {
-            console.log('Add ', argv.first)
+            console.log('Add ', argv.entity)
+        }
+
+    })
+    yargs.command({
+        command: 'remove',
+        describe: 'Remove command',
+        builder: {
+            entity: {
+                describe: 'Entity name',
+                demandOption: true,
+                type: 'string'
+            },
+            name: {
+                describe: 'name',
+                demandOption: true,
+                type: 'string'
+            }
+        },
+        handler(argv) {
+            console.log('Remove ', argv.entity)
+        }
+
+    })
+
+    yargs.command({
+        command: 'list',
+        describe: 'List command',
+        builder: {
+            entity: {
+                describe: 'Entity name',
+                demandOption: true,
+                type: 'string'
+            }
+        },
+        handler(argv) {
+            console.log('List ', argv.entity)
+            handleReadEntity(conn, argv.entity);
         }
 
     })
