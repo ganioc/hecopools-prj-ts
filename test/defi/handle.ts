@@ -6,6 +6,7 @@ import { Pool } from "../../src/entity/Pool";
 import { Pair } from "../../src/entity/Pair";
 import * as yargs from 'yargs';
 import { updatePair as updateBXHPair} from '../update/updatebxh'
+import { updatePair as updateMDEXPair} from '../update/updatemdex'
 
 
 async function toCreate(connection: Connection) {
@@ -85,6 +86,10 @@ async function updateDefaultPair(connection: Connection, name:string){
 
     if(lowerCase === 'bxh'){
         return updateBXHPair(connection, name)
+    }else if(lowerCase === 'mdex'){
+        return updateMDEXPair(connection, name)
+    }else{
+        console.error('Unsupport ', name)
     }
 
 }
