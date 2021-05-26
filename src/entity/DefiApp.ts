@@ -11,7 +11,7 @@ export class DefiApp{
     url:string;
 
     @Column()
-    descr:string;
+    desc:string;
 
     @OneToMany(()=> SmartContract, contract => contract.defiApp, {
         cascade: true

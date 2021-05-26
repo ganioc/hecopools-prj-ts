@@ -6,12 +6,12 @@ import { SmartContract } from "../../src/entity/SmartContract";
 async function toCreate(connection: Connection) {
     console.log('toCreate')
 }
-async function toAddApp(connection: Connection,name: string, url:string, descr: string){
+async function toAddApp(connection: Connection,name: string, url:string, desc: string){
     console.log('toAddApp: ', name)
     let app = new DefiApp();
     app.name = name;
     app.url = url;
-    app.descr = descr;
+    app.desc = desc;
     let result = await connection.manager.save(app);
     console.log(result)
     console.log('toAddApp done.')
@@ -62,7 +62,7 @@ async function toFindContracts(connection:Connection, appstr:string){
                         where:{ name: appstr }
                     })
     console.log(app)
-    console.log(app.contracts)
+    // console.log(app.contracts)
     console.log('\ntoFindContracts() done.')
 }
 async function main() {
@@ -101,7 +101,7 @@ async function main() {
 
     // await toFindContracts(conn, 'BXH')
 
-    await toFindContracts(conn, 'BACK')
+    await toFindContracts(conn, 'BXH')
 
     // await toRead(conn)
 }

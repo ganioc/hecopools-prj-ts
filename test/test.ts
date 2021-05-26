@@ -1,4 +1,3 @@
-
 import { ethers } from 'ethers';
 import configJson from "../secret/config.json"
 import V2RouterAbi from "../src/config/IUniswapV2Router02.json"
@@ -31,7 +30,7 @@ async function loopFactory() {
     let result = await contract.feeTo();
     console.log("feeTo: ", result)
     result = await contract.feeToSetter();
-    console.log("feeToSetter: ", result)
+    console.log("feeToSetter: ", result) 
     result = await contract.migrator();
     console.log("migrator: ", result)
     result = await contract.allPairsLength();

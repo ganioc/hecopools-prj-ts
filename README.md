@@ -21,6 +21,7 @@ DefiApp -> Contract  (one to many)
          pool
          pair
 
+Try something as FILO queue:
 
 
 ```
@@ -61,12 +62,19 @@ UniswapV2Factory, 0xe0367ec2bd4Ba22B1593E4fEFcB91D29DE6C512a
     getAmountsOut()
     getAmountsIn()
 
+// uniswapV2Factory.sol
+allPairs()
+allPairs(0)
+
 ```
 
 ### BACK hecoswap
 
 ```
-
+const addrBackConfig  = "0x51b4fa29dA61715d3384Be9f8a7033bD349Ef629"
+const addrBackPairFactory  = "0x3fcB7AF59a84d79F4Ce466E39e62183AC62C0059"
+const addrBackPoolFactory = "0xCCE77dCbCDEcC43520144a030CA15B38f6711832"
+const addrBackReward = "0xa2B27EaC08d1E792F2CE2d99C0331D0E495c4D80"
 
 
 

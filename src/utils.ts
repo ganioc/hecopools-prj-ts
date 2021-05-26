@@ -5,3 +5,7 @@ export function DelayMs (t:number):Promise<void>{
         },t)
     })
 }
+
+export async function getImportantContracts(name:string):Promise<void>{
+    console.log('getImportantContracts()')
+}
