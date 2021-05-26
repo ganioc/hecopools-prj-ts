@@ -95,6 +95,8 @@ Repurchase : https://hecoinfo.com/address/0x46900C0c18ace98bAAB81561B9906Dc93287
 BlackHole : https://hecoinfo.com/address/0xF9852C6588b70ad3c26daE47120f174527e03a25#code
 
 
+14545 pairs
+
 ```
 ### Bxh hecoswap
 
