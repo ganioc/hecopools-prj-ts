@@ -6,8 +6,8 @@ import { Pool } from "../../src/entity/Pool";
 import { Pair } from "../../src/entity/Pair";
 import * as yargs from 'yargs';
 import { updatePair as updateBXHPair} from '../update/updatebxh'
-import { updatePair as updateMDEXPair} from '../update/updatemdex'
-
+import { updatePair as updateMDEXPair, updateBatchPair as updateBatchMDEXPair} from '../update/updatemdex'
+import { test as handleTest } from '../update/test'
 
 async function toCreate(connection: Connection) {
     console.log('toCreate')
@@ -81,6 +81,18 @@ async function addDefaultEntity<Type>(connection: Connection, target: EntityTarg
         console.log('Not support: ', nameTarget)
     }
 }
+async function updateBatchDefaultPair(connection: Connection, name:string, start: number){
+    let lowerCase = name.toLowerCase();
+
+    if(lowerCase === 'bxh'){
+        return updateBXHPair(connection, name)
+    }else if(lowerCase === 'mdex'){
+        return updateBatchMDEXPair(connection, name, start)
+    }else{
+        console.error('Unsupport ', name)
+    }
+
+}
 async function updateDefaultPair(connection: Connection, name:string){
     let lowerCase = name.toLowerCase();
 
@@ -92,6 +104,16 @@ async function updateDefaultPair(connection: Connection, name:string){
         console.error('Unsupport ', name)
     }
 
+}
+async function updateBatchDefaultEntity<Type>(connection:Connection, target: EntityTarget<Type>, name:string, start){
+    let nameTarget = getClassName(target)
+    console.log('\nupdateBatchDefaultEntity ', nameTarget, name)
+
+    if(nameTarget === 'Pair'){
+        await updateBatchDefaultPair(connection, name, start);
+    }else{
+        console.error('Not support: ', nameTarget)
+    }
 }
 async function updateDefaultEntity<Type>(connection:Connection, target: EntityTarget<Type>, name:string){
     let nameTarget = getClassName(target)
@@ -205,8 +227,13 @@ async function handleRemoveEntityByName(connection: Connection, entityName: stri
 async function handleAddDefaultEntity(connection: Connection, entity: string | unknown) {
     await addDefaultEntity(connection, getEntityByName(entity as string))
 }
-async function handleUpdateDefaultEntity(connection:Connection, entity: string | unknown, name:string | unknown){
-    await updateDefaultEntity(connection, getEntityByName(entity as string), name as string)
+async function handleUpdateDefaultEntity(connection:Connection, entity: string | unknown, name:string | unknown, batch: string | unknown, start:number | unknown){
+
+    if(batch && batch === '1'){
+        await updateBatchDefaultEntity(connection, getEntityByName(entity as string), name as string, start as number)
+    }else{
+        await updateDefaultEntity(connection, getEntityByName(entity as string), name as string)
+    }
 }
 async function main() {
     // console.log('defi mdex')
@@ -271,11 +298,21 @@ async function main() {
                 describe: 'DefiApp name',
                 demandOption: true,
                 type: 'string'
+            },
+            batch:{
+                describe: 'parallel processing',
+                demandOption: false,
+                type: 'string'
+            },
+            start:{
+                describe: 'start index',
+                demandOption: false,
+                type: 'number'
             }
         },
         handler(argv) {
             console.log('UpdateDefault ', argv.entity, argv.name)
-            handleUpdateDefaultEntity(conn, argv.entity, argv.name)
+            handleUpdateDefaultEntity(conn, argv.entity, argv.name, argv.batch,argv.start)
         }
 
     })
@@ -331,6 +368,28 @@ async function main() {
         handler(argv) {
             console.log('List ', argv.entity)
             handleReadEntity(conn, argv.entity);
+        }
+
+    })
+
+    yargs.command({
+        command: 'test',
+        describe: 'Test Token command',
+        builder: {
+            contract: {
+                describe: 'Token contract name',
+                demandOption: true,
+                type: 'string'
+            },
+            name: {
+                describe: 'defiapp name',
+                demandOption: true,
+                type: 'string'
+            }
+        },
+        handler(argv) {
+            console.log('Test ')
+            handleTest(conn, argv.contract as string, argv.name as string);
         }
 
     })

@@ -5,8 +5,12 @@
             "address":"0x19ADC4f74cdFA4De9b9968719aD376c8a2487b96"
         },
         {
-            "symbol":"",
+            "symbol":"One",
             "address":"0xabaeC7A3397e93D27a217326A39096F0C92FA82C"
+        },
+        {
+            "symbol":"Two",
+            "address":"0xb0b670fc1F7724119963018DB0BfA86aDb22d941"
         }
     ]
 }

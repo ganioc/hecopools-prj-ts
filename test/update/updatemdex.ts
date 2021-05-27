@@ -8,6 +8,9 @@ import MdexPairAbi from "../../src/config/IMdexPair.json"
 import { DefiApp } from "../../src/entity/DefiApp";
 import { Pair } from "../../src/entity/Pair";
 import Abandoned from '../../src/config/abandonToken.json'
+import { existPair } from './common'
+import { handleSingle, updateSingleByIndex } from "./updateSingle";
+import { DelayMs } from "../../src/utils";
 
 const chainUrl = "https://http-mainnet.hecochain.com"
 const provider = new ethers.providers.JsonRpcProvider(chainUrl);
@@ -15,20 +18,7 @@ let walletProvider = new ethers.Wallet(configJson.secret, provider)
 
 const addrFactory = "0xb0b670fc1F7724119963018DB0BfA86aDb22d941"
 
-async function existPair(connection: Connection, pairAddr: string, app: DefiApp): Promise<boolean> {
-    let pairFind = await connection
-        .getRepository(Pair)
-        .findOne({
-            address: pairAddr,
-            defiApp: app
-        })
-    if (pairFind) {
-        return true
-    } else {
-        return false
-    }
 
-}
 export async function updatePair(connection: Connection, name: string) {
     console.log('update mdex pair')
     const contract = new ethers.Contract(addrFactory, MdexFactoryAbi.abi, walletProvider)
@@ -63,11 +53,11 @@ export async function updatePair(connection: Connection, name: string) {
         console.log('token0', token0Addr)
 
 
-        let inAbandon = Abandoned.abandoned.find((token)=>{
+        let inAbandon = Abandoned.abandoned.find((token) => {
             return token.address === token0Addr
         })
         // console.log('inAbandon: ', inAbandon)
-        if(inAbandon){
+        if (inAbandon) {
             console.log('Will not process ', token0Addr)
             continue
         }
@@ -94,11 +84,11 @@ export async function updatePair(connection: Connection, name: string) {
         console.log('token1', token1Addr)
 
 
-        inAbandon = Abandoned.abandoned.find((token)=>{
+        inAbandon = Abandoned.abandoned.find((token) => {
             return token.address === token1Addr
         })
         // console.log('inAbandon: ', inAbandon)
-        if(inAbandon){
+        if (inAbandon) {
             console.log('Will not process ', token1Addr)
             continue
         }
@@ -139,8 +129,44 @@ export async function updatePair(connection: Connection, name: string) {
         let pairSave = await connection
             .getRepository(Pair)
             .save(pair)
-        
+
         assert(pairSave, 'save pair failed')
         console.log('Saved.')
+    }
+}
+
+// handleSingle(connection: Connection, contractAddr: string, appName: string)
+export async function updateBatchPair(connection: Connection, name: string, start: number) {
+    console.log('\nbatch processing')
+
+    console.log('update mdex pair')
+    const contract = new ethers.Contract(addrFactory, MdexFactoryAbi.abi, walletProvider)
+    let result = await contract.allPairsLength();
+
+    let pairsLength = parseInt(result.toString())
+    console.log('pairs length: ', pairsLength)
+
+    const steps = 5;
+
+    for (let i = start; i < pairsLength; i = i + steps) {
+        let jobs = []
+        for(let j=0; j<steps; j++){
+            jobs.push(updateSingleByIndex(connection, name, i+j, contract))
+        }
+        await Promise.all(jobs)
+            .then((result)=>{
+                for(let res of result){
+                    // if(typeof res !== 'boolean'){
+                    //     console.log(res)
+                    // }else{
+                    //     console.log(res)
+                    // }
+                    console.log(res)
+                }
+            })
+            .catch((e)=>{
+                console.log(e)
+            })
+        await DelayMs(1000)
     }
 }

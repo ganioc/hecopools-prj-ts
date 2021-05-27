@@ -33,9 +33,17 @@ D
 % node out/test/defi/handle.js addDefault  --entity SmartContract
 
 
-% node out/test/defi/handle.js updateDefault  --entity  Pair  --name BXH
+node out/test/defi/handle.js updateDefault  --entity  Pair  --name BXH
 
-% node out/test/defi/handle.js updateDefault  --entity  Pair  --name MDEX
+node out/test/defi/handle.js updateDefault  --entity  Pair  --name MDEX --batch 1 --start 640
+
+
+
+// malfunction
+% node out/test/defi/handle.js test --contract 0x622E1371552Fa865C2edfda0Ba93aCcec504a7CE --name MDEX
+
+// Good functioning
+% node out/test/defi/handle.js test --contract 0x23E2ed16Bc4ce3fcab08a5e5d9508ba03F8cF173 --name MDEX
 
 ```
 
@@ -96,6 +104,11 @@ BlackHole : https://hecoinfo.com/address/0xF9852C6588b70ad3c26daE47120f174527e03
 
 
 14545 pairs
+
+Wrong pair list:
+token1 0xb0b670fc1F7724119963018DB0BfA86aDb22d941
+
+
 
 ```
 ### Bxh hecoswap
