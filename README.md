@@ -35,7 +35,7 @@ D
 
 node out/test/defi/handle.js updateDefault  --entity  Pair  --name BXH
 
-node out/test/defi/handle.js updateDefault  --entity  Pair  --name MDEX --batch 1 --start 640
+node out/test/defi/handle.js updateDefault  --entity  Pair  --name MDEX --batch 1 --start 100
 
 
 

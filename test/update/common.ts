@@ -7,7 +7,14 @@ import MdexPairAbi from "../../src/config/IMdexPair.json"
 import Abandoned from '../../src/config/abandonToken.json'
 import {getTokenName as tokenGetTokenName, getTokenDecimals as tokenGetTokenDecimals, getTokenSymbol as tokenGetTokenSymbol, getTokenTotalSupply as tokenGetTokenTotalSupply} from '../../src/adapter/contract/Token'
 
-const chainUrl = "https://http-mainnet.hecochain.com"
+// const chainUrl = "https://http-mainnet.hecochain.com"
+
+const chainUrl = "https://http-mainnet-node.defibox.com"
+
+// abroad url
+// "https://http-mainnet.hecochain.com"
+
+
 const provider = new ethers.providers.JsonRpcProvider(chainUrl);
 let walletProvider = new ethers.Wallet(configJson.secret, provider)
 

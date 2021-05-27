@@ -146,7 +146,7 @@ export async function updateBatchPair(connection: Connection, name: string, star
     let pairsLength = parseInt(result.toString())
     console.log('pairs length: ', pairsLength)
 
-    const steps = 5;
+    const steps = 10;
 
     for (let i = start; i < pairsLength; i = i + steps) {
         let jobs = []
