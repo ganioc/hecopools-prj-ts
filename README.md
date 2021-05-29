@@ -108,6 +108,11 @@ BlackHole : https://hecoinfo.com/address/0xF9852C6588b70ad3c26daE47120f174527e03
 Wrong pair list:
 token1 0xb0b670fc1F7724119963018DB0BfA86aDb22d941
 
+// Famous pairs:
+HGT/HUSD
+HBELT/WHT
+BLACK/WHT
+BOO/MDX
 
 
 ```
@@ -129,6 +134,14 @@ UniswapV2Factory, 0xe0367ec2bd4Ba22B1593E4fEFcB91D29DE6C512a
 // uniswapV2Factory.sol
 allPairs()
 allPairs(0)
+
+
+// Famous pairs:
+HBTC/HT
+ETH/HT
+HT/USDT
+BXH/HT
+
 
 ```
 

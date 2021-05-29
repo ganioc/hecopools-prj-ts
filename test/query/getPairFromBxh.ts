@@ -14,12 +14,17 @@ async function main(){
     console.log(app)
     
     let pair = await repos 
-        .createQueryBuilder()
+        .createQueryBuilder("pair")
+        .leftJoinAndSelect("pair.defiApp","defiApp")
         .where({
-            defiAPP:app,
-            token0Symbol:'HUSD'
+            // token0Symbol:'WHT',
+            // token1Symbol: "USDT",
+            token1Symbol: 'BXH',
+            defiApp: app
         })
-        .getOne()
+        .skip(0)
+        .take(20)
+        .getMany()
     console.log(pair)
 }
 
