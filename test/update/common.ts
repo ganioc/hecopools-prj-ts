@@ -10,12 +10,15 @@ import BigNumber from "bignumber.js"
 import { updateSingleByIndex } from "./updateSingle"
 import { DelayMs } from "../../src/utils"
 
+require('custom-env').env()
 
 let 
  chainUrl = "https://http-mainnet-node.defibox.com"
 
  if(process.env.WHEREAMI === 'Hongkong'){
     chainUrl = "https://http-mainnet-node.defibox.com";
+}else if(process.env.WHEREAMI === 'USA'){
+    chainUrl = "https://http-mainnet.hecochain.com"
 }
 
 // abroad url
