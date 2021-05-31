@@ -5,7 +5,7 @@ import { SmartContract } from "../../src/entity/SmartContract";
 import { Pool } from "../../src/entity/Pool";
 import { Pair } from "../../src/entity/Pair";
 import * as yargs from 'yargs';
-import { updateBatchBXHPair, updatePair as updateBXHPair} from '../update/updatebxh'
+import { updateBatchBXHPair} from '../update/updatebxh'
 import { updateBatchMDEXPair} from '../update/updatemdex'
 import { test as handleTest } from '../update/test'
 

@@ -9,10 +9,16 @@ import { strict as assert } from 'assert'
 import { Pair } from "../../src/entity/Pair";
 import Abandoned from '../../src/config/abandonToken.json'
 import { updateBatchPair } from "./common";
+import { walletProvider} from "./common"
 
-const chainUrl = "https://http-mainnet.hecochain.com"
-const provider = new ethers.providers.JsonRpcProvider(chainUrl);
-let walletProvider = new ethers.Wallet(configJson.secret, provider)
+// let chainUrl = "https://http-mainnet.hecochain.com"
+
+// if(process.env.WHEREAMI === 'Hongkong'){
+//     chainUrl = "https://http-mainnet-node.defibox.com";
+// }
+
+// const provider = new ethers.providers.JsonRpcProvider(chainUrl);
+// let walletProvider = new ethers.Wallet(configJson.secret, provider)
 
 
 const addrFactory = "0xe0367ec2bd4Ba22B1593E4fEFcB91D29DE6C512a"

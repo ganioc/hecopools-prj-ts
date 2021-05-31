@@ -10,22 +10,20 @@ import BigNumber from "bignumber.js"
 import { updateSingleByIndex } from "./updateSingle"
 import { DelayMs } from "../../src/utils"
 
-// const chainUrl = "https://http-mainnet.hecochain.com"
 
-const chainUrl = "https://http-mainnet-node.defibox.com"
+let 
+ chainUrl = "https://http-mainnet-node.defibox.com"
+
+ if(process.env.WHEREAMI === 'Hongkong'){
+    chainUrl = "https://http-mainnet-node.defibox.com";
+}
 
 // abroad url
 // "https://http-mainnet.hecochain.com"
 
 
 const provider = new ethers.providers.JsonRpcProvider(chainUrl);
-let walletProvider = new ethers.Wallet(configJson.secret, provider)
-
-// export async function init(){
-//     const conn = await createConnection();
-// }
-
-// init()
+export const walletProvider = new ethers.Wallet(configJson.secret, provider)
 
 
 export async function existPair(connection: Connection, pairAddr: string, app: DefiApp): Promise<boolean> {

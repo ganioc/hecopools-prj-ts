@@ -28,14 +28,17 @@ D
 
 % node out/test/defi/handle.js removeByName  --entity DefiApp --name BXH 
 
+# (1) Update DefiApp first
 % node out/test/defi/handle.js addDefault  --entity DefiApp
 
+
+# (2) Update SmartContract secondly
 % node out/test/defi/handle.js addDefault  --entity SmartContract
 
 
 # node out/test/defi/handle.js updateDefault  --entity  Pair  --name BXH
 
-# Update default MDEX, BXH pairs;
+# (3) Update default MDEX, BXH pairs;
 node out/test/defi/handle.js updateDefault  --entity  Pair  --name MDEX --batch 1 --start 0
 node out/test/defi/handle.js updateDefault  --entity  Pair  --name BXH --batch 1 --start 0
 

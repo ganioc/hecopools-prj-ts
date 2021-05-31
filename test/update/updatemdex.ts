@@ -9,12 +9,16 @@ import { DefiApp } from "../../src/entity/DefiApp";
 import { Pair } from "../../src/entity/Pair";
 import Abandoned from '../../src/config/abandonToken.json'
 import { existPair, updateBatchPair } from './common'
-import { handleSingle, updateSingleByIndex } from "./updateSingle";
-import { DelayMs } from "../../src/utils";
+import {walletProvider } from "./common"
 
-const chainUrl = "https://http-mainnet.hecochain.com"
-const provider = new ethers.providers.JsonRpcProvider(chainUrl);
-let walletProvider = new ethers.Wallet(configJson.secret, provider)
+// let chainUrl = "https://http-mainnet.hecochain.com"
+
+// if(process.env.WHEREAMI === 'Hongkong'){
+//     chainUrl = "https://http-mainnet-node.defibox.com";
+// }
+
+// const provider = new ethers.providers.JsonRpcProvider(chainUrl);
+// let walletProvider = new ethers.Wallet(configJson.secret, provider)
 
 const addrFactory = "0xb0b670fc1F7724119963018DB0BfA86aDb22d941"
 
