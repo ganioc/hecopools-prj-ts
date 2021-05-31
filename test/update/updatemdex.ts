@@ -8,7 +8,7 @@ import MdexPairAbi from "../../src/config/IMdexPair.json"
 import { DefiApp } from "../../src/entity/DefiApp";
 import { Pair } from "../../src/entity/Pair";
 import Abandoned from '../../src/config/abandonToken.json'
-import { existPair } from './common'
+import { existPair, updateBatchPair } from './common'
 import { handleSingle, updateSingleByIndex } from "./updateSingle";
 import { DelayMs } from "../../src/utils";
 
@@ -135,38 +135,43 @@ export async function updatePair(connection: Connection, name: string) {
     }
 }
 
+export function getMdxFactoryContract(){
+    return new ethers.Contract(addrFactory, MdexFactoryAbi.abi, walletProvider)
+}
+
 // handleSingle(connection: Connection, contractAddr: string, appName: string)
-export async function updateBatchPair(connection: Connection, name: string, start: number) {
+export async function updateBatchMDEXPair(connection: Connection, name: string, start: number) {
     console.log('\nbatch processing')
-
     console.log('update mdex pair')
-    const contract = new ethers.Contract(addrFactory, MdexFactoryAbi.abi, walletProvider)
-    let result = await contract.allPairsLength();
 
-    let pairsLength = parseInt(result.toString())
-    console.log('pairs length: ', pairsLength)
+    await updateBatchPair(connection, name, start, getMdxFactoryContract())
+    // const contract = new ethers.Contract(addrFactory, MdexFactoryAbi.abi, walletProvider)
+    // let result = await contract.allPairsLength();
 
-    const steps = 10;
+    // let pairsLength = parseInt(result.toString())
+    // console.log('pairs length: ', pairsLength)
 
-    for (let i = start; i < pairsLength; i = i + steps) {
-        let jobs = []
-        for(let j=0; j<steps; j++){
-            jobs.push(updateSingleByIndex(connection, name, i+j, contract))
-        }
-        await Promise.all(jobs)
-            .then((result)=>{
-                for(let res of result){
-                    // if(typeof res !== 'boolean'){
-                    //     console.log(res)
-                    // }else{
-                    //     console.log(res)
-                    // }
-                    console.log(res)
-                }
-            })
-            .catch((e)=>{
-                console.log(e)
-            })
-        await DelayMs(1000)
-    }
+    // const steps = 10;
+
+    // for (let i = start; i < pairsLength; i = i + steps) {
+    //     let jobs = []
+    //     for(let j=0; j<steps; j++){
+    //         jobs.push(updateSingleByIndex(connection, name, i+j, contract))
+    //     }
+    //     await Promise.all(jobs)
+    //         .then((result)=>{
+    //             for(let res of result){
+    //                 // if(typeof res !== 'boolean'){
+    //                 //     console.log(res)
+    //                 // }else{
+    //                 //     console.log(res)
+    //                 // }
+    //                 console.log(res)
+    //             }
+    //         })
+    //         .catch((e)=>{
+    //             console.log(e)
+    //         })
+    //     await DelayMs(1000)
+    // }
 }

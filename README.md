@@ -33,10 +33,11 @@ D
 % node out/test/defi/handle.js addDefault  --entity SmartContract
 
 
-node out/test/defi/handle.js updateDefault  --entity  Pair  --name BXH
+# node out/test/defi/handle.js updateDefault  --entity  Pair  --name BXH
 
-node out/test/defi/handle.js updateDefault  --entity  Pair  --name MDEX --batch 1 --start 100
-
+# Update default MDEX, BXH pairs;
+node out/test/defi/handle.js updateDefault  --entity  Pair  --name MDEX --batch 1 --start 0
+node out/test/defi/handle.js updateDefault  --entity  Pair  --name BXH --batch 1 --start 0
 
 
 // malfunction
@@ -118,6 +119,8 @@ MDX/USDT
 WHT/USDT
 MDX/WHT
 DOGE/USDT
+HDOT/USDT
+USDT/HPT
 
 
 ```
@@ -168,6 +171,16 @@ const addrBackReward = "0xa2B27EaC08d1E792F2CE2d99C0331D0E495c4D80"
 
 
 ```
+
+## Price recording, where should I put the data at?
+remote database?
+
+some cheap node?
+
+local database?
+
+Something always on internet, cheap, update information from heco chain.
+
 
 
 

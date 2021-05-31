@@ -8,6 +8,7 @@ import configJson from "../../secret/config.json"
 import { strict as assert } from 'assert'
 import { Pair } from "../../src/entity/Pair";
 import Abandoned from '../../src/config/abandonToken.json'
+import { updateBatchPair } from "./common";
 
 const chainUrl = "https://http-mainnet.hecochain.com"
 const provider = new ethers.providers.JsonRpcProvider(chainUrl);
@@ -16,6 +17,17 @@ let walletProvider = new ethers.Wallet(configJson.secret, provider)
 
 const addrFactory = "0xe0367ec2bd4Ba22B1593E4fEFcB91D29DE6C512a"
 
+
+export function getBxhFactoryContract(){
+    return new ethers.Contract(addrFactory, V2FactoryAbi.abi, walletProvider)
+}
+
+export async function updateBatchBXHPair(connection: Connection, name: string, start: number){
+    console.log('\nbatch processing')
+    console.log('update mdex pair')
+
+    await updateBatchPair(connection, name, start, getBxhFactoryContract())
+}
 
 export async function updatePair(connection :Connection, name:string){
     const contract = new ethers.Contract(addrFactory, V2FactoryAbi.abi, walletProvider)

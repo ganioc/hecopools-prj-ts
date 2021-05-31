@@ -5,8 +5,8 @@ import { SmartContract } from "../../src/entity/SmartContract";
 import { Pool } from "../../src/entity/Pool";
 import { Pair } from "../../src/entity/Pair";
 import * as yargs from 'yargs';
-import { updatePair as updateBXHPair} from '../update/updatebxh'
-import { updatePair as updateMDEXPair, updateBatchPair as updateBatchMDEXPair} from '../update/updatemdex'
+import { updateBatchBXHPair, updatePair as updateBXHPair} from '../update/updatebxh'
+import { updateBatchMDEXPair} from '../update/updatemdex'
 import { test as handleTest } from '../update/test'
 
 async function toCreate(connection: Connection) {
@@ -85,7 +85,7 @@ async function updateBatchDefaultPair(connection: Connection, name:string, start
     let lowerCase = name.toLowerCase();
 
     if(lowerCase === 'bxh'){
-        return updateBXHPair(connection, name)
+        return updateBatchBXHPair(connection, name, start)
     }else if(lowerCase === 'mdex'){
         return updateBatchMDEXPair(connection, name, start)
     }else{
@@ -93,18 +93,18 @@ async function updateBatchDefaultPair(connection: Connection, name:string, start
     }
 
 }
-async function updateDefaultPair(connection: Connection, name:string){
-    let lowerCase = name.toLowerCase();
+// async function updateDefaultPair(connection: Connection, name:string){
+//     let lowerCase = name.toLowerCase();
 
-    if(lowerCase === 'bxh'){
-        return updateBXHPair(connection, name)
-    }else if(lowerCase === 'mdex'){
-        return updateMDEXPair(connection, name)
-    }else{
-        console.error('Unsupport ', name)
-    }
+//     if(lowerCase === 'bxh'){
+//         return updateBXHPair(connection, name)
+//     }else if(lowerCase === 'mdex'){
+//         return updateMDEXPair(connection, name)
+//     }else{
+//         console.error('Unsupport ', name)
+//     }
 
-}
+// }
 async function updateBatchDefaultEntity<Type>(connection:Connection, target: EntityTarget<Type>, name:string, start){
     let nameTarget = getClassName(target)
     console.log('\nupdateBatchDefaultEntity ', nameTarget, name)
@@ -115,16 +115,16 @@ async function updateBatchDefaultEntity<Type>(connection:Connection, target: Ent
         console.error('Not support: ', nameTarget)
     }
 }
-async function updateDefaultEntity<Type>(connection:Connection, target: EntityTarget<Type>, name:string){
-    let nameTarget = getClassName(target)
-    console.log('\nupdateDefaultEntity ', nameTarget, name)
+// async function updateDefaultEntity<Type>(connection:Connection, target: EntityTarget<Type>, name:string){
+//     let nameTarget = getClassName(target)
+//     console.log('\nupdateDefaultEntity ', nameTarget, name)
 
-    if(nameTarget === 'Pair'){
-        await updateDefaultPair(connection, name);
-    }else{
-        console.error('Not support: ', nameTarget)
-    }
-}
+//     if(nameTarget === 'Pair'){
+//         await updateDefaultPair(connection, name);
+//     }else{
+//         console.error('Not support: ', nameTarget)
+//     }
+// }
 async function toRead(connection: Connection) {
     console.log('\ntoRead')
     const appDepository = connection.getRepository(DefiApp)
@@ -232,7 +232,8 @@ async function handleUpdateDefaultEntity(connection:Connection, entity: string |
     if(batch && batch === '1'){
         await updateBatchDefaultEntity(connection, getEntityByName(entity as string), name as string, start as number)
     }else{
-        await updateDefaultEntity(connection, getEntityByName(entity as string), name as string)
+        // await updateDefaultEntity(connection, getEntityByName(entity as string), name as string)
+        console.error('Unknown arguments.')
     }
 }
 async function main() {

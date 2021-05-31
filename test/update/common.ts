@@ -7,6 +7,8 @@ import MdexPairAbi from "../../src/config/IMdexPair.json"
 import Abandoned from '../../src/config/abandonToken.json'
 import {getTokenName as tokenGetTokenName, getTokenDecimals as tokenGetTokenDecimals, getTokenSymbol as tokenGetTokenSymbol, getTokenTotalSupply as tokenGetTokenTotalSupply} from '../../src/adapter/contract/Token'
 import BigNumber from "bignumber.js"
+import { updateSingleByIndex } from "./updateSingle"
+import { DelayMs } from "../../src/utils"
 
 // const chainUrl = "https://http-mainnet.hecochain.com"
 
@@ -140,5 +142,36 @@ export async function getPairPrice(symbol0:string, symbol1:string, poolname:stri
         price0:price0.toNumber(),
         price1: price1.toNumber(),
         timestamp: new Date().getTime()
+    }
+}
+
+export async function updateBatchPair(connection: Connection, name: string, start: number, contract:ethers.Contract){
+    let result = await contract.allPairsLength();
+
+    let pairsLength = parseInt(result.toString())
+    console.log('pairs length: ', pairsLength)
+
+    const steps = 10;
+
+    for (let i = start; i < pairsLength; i = i + steps) {
+        let jobs = []
+        for(let j=0; j<steps; j++){
+            jobs.push(updateSingleByIndex(connection, name, i+j, contract))
+        }
+        await Promise.all(jobs)
+            .then((result0)=>{
+                for(let res of result0){
+                    // if(typeof res !== 'boolean'){
+                    //     console.log(res)
+                    // }else{
+                    //     console.log(res)
+                    // }
+                    console.log(res)
+                }
+            })
+            .catch((e)=>{
+                console.log(e)
+            })
+        await DelayMs(1000)
     }
 }
