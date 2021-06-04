@@ -1,4 +1,4 @@
-import { resolveProperties } from "@ethersproject/properties";
+
 import { Connection, createConnection } from "typeorm";
 import { Price } from "../src/entity/Price";
 import { DelayMs } from "../src/utils";
@@ -12,7 +12,7 @@ async function createPrices(conn: Connection){
         let price = 100* Math.random() + 10;
         let priceObj = new Price();
         priceObj.value = price;
-        priceObj.name = name;
+        // priceObj.name = name;
         priceObj.timestamp = new Date().getTime();
 
         await repos.manager.save(priceObj);

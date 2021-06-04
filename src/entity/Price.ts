@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, Index, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Anchor } from "./Anchor";
 
 @Entity({name: 'price'})
 export class Price{
@@ -8,10 +9,11 @@ export class Price{
     @Column()
     value: number;
 
-    @Column("varchar", { length: 100 })
-    name: string;
-
+    @Index()
     @Column()
     timestamp: number;
+
+    @ManyToOne(()=> Anchor, anchor=>anchor.prices)
+    anchor: Anchor
 }
 
