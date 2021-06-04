@@ -1,17 +1,16 @@
 import { Connection, createConnection, EntityTarget } from "typeorm";
-import { DefiApp } from "../../src/entity/DefiApp";
+import { DefiApp } from "../entity/DefiApp";
 import "reflect-metadata";
-import { SmartContract } from "../../src/entity/SmartContract";
-import { Pool } from "../../src/entity/Pool";
-import { Pair } from "../../src/entity/Pair";
+import { SmartContract } from "../entity/SmartContract";
+import { Pool } from "../entity/Pool";
+import { Pair } from "../entity/Pair";
 import * as yargs from 'yargs';
-import { updateBatchBXHPair} from '../update/updatebxh'
-import { updateBatchMDEXPair} from '../update/updatemdex'
-import { test as handleTest } from '../update/test'
+import { updateBatchBXHPair } from '../../test/update/updatebxh'
+import { updateBatchMDEXPair } from '../../test/update/updatemdex'
+import { test as handleTest } from '../../test/update/test'
+import { handleUpdateDefaultEntity } from "./cli/updateDefaultEntity";
+import { getClassName, getEntityByName } from "./cli/common";
 
-async function toCreate(connection: Connection) {
-    console.log('toCreate')
-}
 async function toAddApp(connection: Connection, name: string, url: string, desc: string) {
     console.log('toAddApp: ', name)
     let app = new DefiApp();
@@ -80,51 +79,10 @@ async function addDefaultEntity<Type>(connection: Connection, target: EntityTarg
     else {
         console.log('Not support: ', nameTarget)
     }
-}
-async function updateBatchDefaultPair(connection: Connection, name:string, start: number){
-    let lowerCase = name.toLowerCase();
-
-    if(lowerCase === 'bxh'){
-        return updateBatchBXHPair(connection, name, start)
-    }else if(lowerCase === 'mdex'){
-        return updateBatchMDEXPair(connection, name, start)
-    }else{
-        console.error('Unsupport ', name)
-    }
 
 }
-// async function updateDefaultPair(connection: Connection, name:string){
-//     let lowerCase = name.toLowerCase();
 
-//     if(lowerCase === 'bxh'){
-//         return updateBXHPair(connection, name)
-//     }else if(lowerCase === 'mdex'){
-//         return updateMDEXPair(connection, name)
-//     }else{
-//         console.error('Unsupport ', name)
-//     }
 
-// }
-async function updateBatchDefaultEntity<Type>(connection:Connection, target: EntityTarget<Type>, name:string, start){
-    let nameTarget = getClassName(target)
-    console.log('\nupdateBatchDefaultEntity ', nameTarget, name)
-
-    if(nameTarget === 'Pair'){
-        await updateBatchDefaultPair(connection, name, start);
-    }else{
-        console.error('Not support: ', nameTarget)
-    }
-}
-// async function updateDefaultEntity<Type>(connection:Connection, target: EntityTarget<Type>, name:string){
-//     let nameTarget = getClassName(target)
-//     console.log('\nupdateDefaultEntity ', nameTarget, name)
-
-//     if(nameTarget === 'Pair'){
-//         await updateDefaultPair(connection, name);
-//     }else{
-//         console.error('Not support: ', nameTarget)
-//     }
-// }
 async function toRead(connection: Connection) {
     console.log('\ntoRead')
     const appDepository = connection.getRepository(DefiApp)
@@ -182,25 +140,8 @@ async function addApp(conn: Connection) {
     await toAddApp(conn, 'MDEX', 'https://mdex.com', 'DEX')
 
 }
-function getClassName<Type>(target: EntityTarget<Type>): string {
-    // 
-    return target.toString().split(' ')[1]
-}
-function getEntityByName<Type>(name: string): EntityTarget<Type> {
-    let lowerCase = name.toLowerCase();
 
-    if (lowerCase === 'defiapp') {
-        return DefiApp;
-    } else if (lowerCase === 'smartcontract') {
-        return SmartContract;
-    } else if (lowerCase === 'pool') {
-        return Pool;
-    } else if (lowerCase === 'pair') {
-        return Pair;
-    } else {
-        throw new Error('Unknown: ' + name)
-    }
-}
+
 function getRelationByName(name: string): string[] {
     let lowerCase = name.toLowerCase();
 
@@ -227,15 +168,7 @@ async function handleRemoveEntityByName(connection: Connection, entityName: stri
 async function handleAddDefaultEntity(connection: Connection, entity: string | unknown) {
     await addDefaultEntity(connection, getEntityByName(entity as string))
 }
-async function handleUpdateDefaultEntity(connection:Connection, entity: string | unknown, name:string | unknown, batch: string | unknown, start:number | unknown){
 
-    if(batch && batch === '1'){
-        await updateBatchDefaultEntity(connection, getEntityByName(entity as string), name as string, start as number)
-    }else{
-        // await updateDefaultEntity(connection, getEntityByName(entity as string), name as string)
-        console.error('Unknown arguments.')
-    }
-}
 async function main() {
     // console.log('defi mdex')
     const conn = await createConnection();
@@ -295,17 +228,17 @@ async function main() {
                 demandOption: true,
                 type: 'string'
             },
-            name:{
+            name: {
                 describe: 'DefiApp name',
                 demandOption: true,
                 type: 'string'
             },
-            batch:{
+            batch: {
                 describe: 'parallel processing',
                 demandOption: false,
                 type: 'string'
             },
-            start:{
+            start: {
                 describe: 'start index',
                 demandOption: false,
                 type: 'number'
@@ -313,7 +246,7 @@ async function main() {
         },
         handler(argv) {
             console.log('UpdateDefault ', argv.entity, argv.name)
-            handleUpdateDefaultEntity(conn, argv.entity, argv.name, argv.batch,argv.start)
+            handleUpdateDefaultEntity(conn, argv.entity, argv.name, argv.batch, argv.start)
         }
 
     })

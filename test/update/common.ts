@@ -1,5 +1,5 @@
 import { ethers } from "ethers"
-import { Connection, createConnection, getConnection } from "typeorm"
+import { Connection, getConnection } from "typeorm"
 import { DefiApp } from "../../src/entity/DefiApp"
 import { Pair } from "../../src/entity/Pair"
 import configJson from "../../secret/config.json"

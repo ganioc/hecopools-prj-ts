@@ -184,6 +184,18 @@ local database?
 
 Something always on internet, cheap, update information from heco chain.
 
+### Use a server to gather informaiton 
+For long time maintenance
+
+```
+Put the data in db,
+query using sqlite3 for now. 
+
+Anchor -> Price
+
+```
+
+
 
 
 
