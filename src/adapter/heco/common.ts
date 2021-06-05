@@ -31,6 +31,13 @@ if (process.env.WHEREAMI === 'Hongkong') {
 const provider = new ethers.providers.JsonRpcProvider(chainUrl);
 export const walletProvider = new ethers.Wallet(configJson.secret, provider)
 
+export interface IfPariPrice{
+    token0: string,
+    token1: string,
+    price0: number,
+    price1: number,
+    timestamp: number
+}
 
 export async function getTokenNameByAddr(tokenAddr: string) {
     return getTokenName(tokenAddr, walletProvider)
@@ -155,7 +162,7 @@ export async function updateBatchPair(connection: Connection, name: string, star
 }
 
 // To Read Pair Price
-export async function getPairPrice(symbol0: string, symbol1: string, poolname: string) {
+export async function getPairPrice(symbol0: string, symbol1: string, poolname: string):Promise<IfPariPrice> {
     console.log('\ngetPairPrice()')
     const pair = await getPair(symbol0, symbol1, poolname)
     const contract = getPairContract(pair.address)
