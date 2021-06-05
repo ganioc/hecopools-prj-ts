@@ -15,7 +15,7 @@ import { updateBatchMDEXPair } from "./updateMdex";
  * @param batch 
  * @param start 
  */
-export async function handleUpdateDefaultEntity(connection:Connection, entity: string | unknown, name:string | unknown, batch: string | unknown, start:number | unknown, step: number ){
+export async function handleUpdateDefaultEntity(connection:Connection, entity: string | unknown, name:string | unknown, batch: string | unknown, start:number | unknown, step: number|unknown ){
 
     if(batch && batch === '1'){
         await updateBatchDefaultEntity(connection, getEntityByName(entity as string), name as string, start as number, step as number)
@@ -29,7 +29,7 @@ export async function updateBatchDefaultEntity<Type>(connection:Connection, targ
     console.log('\nupdateBatchDefaultEntity ', nameTarget, name)
 
     if(nameTarget === 'Pair'){
-        await updateBatchDefaultPair(connection, name, start);
+        await updateBatchDefaultPair(connection, name, start, step);
     }else{
         console.error('Not support: ', nameTarget)
     }

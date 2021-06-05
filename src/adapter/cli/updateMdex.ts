@@ -13,5 +13,5 @@ export async function updateBatchMDEXPair(connection: Connection, name: string, 
     console.log('\nbatch processing')
     console.log('update mdex pair')
 
-    await updateBatchPair(connection, name, start, getMdxFactoryContract())
+    await updateBatchPair(connection, name, start, step, getMdxFactoryContract())
 }
