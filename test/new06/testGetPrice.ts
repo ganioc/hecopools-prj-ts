@@ -7,13 +7,13 @@ import { IfPariPrice } from "../../src/adapter/heco/common";
 
 const DELAY_PERIOD = 30000;
 
-async function handleSavePrice(func:()=>Promise<IfPariPrice>,pool:string){
+async function handleSavePrice(func:()=>Promise<IfPariPrice>,pool:string, choose: number){
     let result = await func();
     console.log(result)
 
     if(result){
         // save price to db
-        let result0 = await savePrice(pool, result.token0, result.token1, result.price0)
+        let result0 = await savePrice(pool, result.token0, result.token1, (choose === 0)?result.price0:result.price1)
 
         console.log(result0)
     }
@@ -34,11 +34,11 @@ async function main() {
 
         //     console.log(result0)
         // }
-        await handleSavePrice(BACK2BXH_price, "BXH")
+        await handleSavePrice(BACK2BXH_price, "BXH",0)
 
         await DelayMs(DELAY_PERIOD);
 
-        await handleSavePrice(USDT2BXH_price, "BXH")
+        await handleSavePrice(USDT2BXH_price, "BXH",1)
 
         // result = await USDT2BXH_price();
         // console.log(result);
