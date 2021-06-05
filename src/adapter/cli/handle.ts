@@ -263,11 +263,16 @@ async function main() {
                 describe: 'start index',
                 demandOption: false,
                 type: 'number'
+            },
+            step:{
+                describe: 'step',
+                demandOption: true,
+                type: 'number'
             }
         },
         handler(argv) {
             console.log('UpdateDefault ', argv.entity, argv.name)
-            handleUpdateDefaultEntity(conn, argv.entity, argv.name, argv.batch, argv.start)
+            handleUpdateDefaultEntity(conn, argv.entity, argv.name, argv.batch, argv.start, argv.step)
         }
     })
 

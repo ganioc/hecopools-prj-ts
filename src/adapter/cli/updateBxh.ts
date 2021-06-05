@@ -9,9 +9,9 @@ export function getBxhFactoryContract(){
     return new ethers.Contract(addrFactory, V2FactoryAbi.abi, walletProvider)
 }
 
-export async function updateBatchBXHPair(connection: Connection, name: string, start: number){
+export async function updateBatchBXHPair(connection: Connection, name: string, start: number, step:number){
     console.log('\nbatch processing')
     console.log('update mdex pair')
 
-    await updateBatchPair(connection, name, start, getBxhFactoryContract())
+    await updateBatchPair(connection, name, start, step,getBxhFactoryContract())
 }

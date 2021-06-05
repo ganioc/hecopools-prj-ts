@@ -9,7 +9,7 @@ export function getMdxFactoryContract(){
     return new ethers.Contract(addrFactory, MdexFactoryAbi.abi, walletProvider)
 }
 
-export async function updateBatchMDEXPair(connection: Connection, name: string, start: number) {
+export async function updateBatchMDEXPair(connection: Connection, name: string, start: number, step:number) {
     console.log('\nbatch processing')
     console.log('update mdex pair')
 

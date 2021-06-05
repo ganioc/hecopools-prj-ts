@@ -130,13 +130,13 @@ export function getPairContract(contractAddr: string) {
     return new ethers.Contract(contractAddr, MdexPairAbi.abi, walletProvider)
 }
 
-export async function updateBatchPair(connection: Connection, name: string, start: number, contract: ethers.Contract) {
+export async function updateBatchPair(connection: Connection, name: string, start: number, step:number, contract: ethers.Contract) {
     let result = await contract.allPairsLength();
 
     let pairsLength = parseInt(result.toString())
     console.log('pairs length: ', pairsLength)
 
-    const steps = 1;
+    const steps = step;
 
     for (let i = start; i < pairsLength; i = i + steps) {
         let jobs = []
