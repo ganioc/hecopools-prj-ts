@@ -11,7 +11,7 @@ import MdexPairAbi from "../../config/IMdexPair.json"
 import AbandonedList from '../../config/abandonToken.json'
 import { getTokenDecimals, getTokenName, getTokenSymbol, getTokenTotalSupply } from "./contract/Token";
 import { DefiApp } from "../../entity/DefiApp";
-import { updateSingleByIndex } from "../cli/updateSingle";
+import { updateSingleByIndex } from "./updateSingle";
 import BigNumber from "bignumber.js"
 
 require('custom-env').env()
@@ -136,7 +136,7 @@ export async function updateBatchPair(connection: Connection, name: string, star
     let pairsLength = parseInt(result.toString())
     console.log('pairs length: ', pairsLength)
 
-    const steps = 10;
+    const steps = 1;
 
     for (let i = start; i < pairsLength; i = i + steps) {
         let jobs = []

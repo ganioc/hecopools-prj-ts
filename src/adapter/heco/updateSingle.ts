@@ -4,7 +4,7 @@ import { Connection } from "typeorm";
 import { DefiApp } from "../../entity/DefiApp";
 import { Pair } from "../../entity/Pair";
 import { DelayMs } from "../../utils";
-import { existPair, getPairContract, getTokenDecimalsByAddr, getTokenNameByAddr, getTokenSymbolByAddr, getTokenTotalSupplyByAddr, isAbandoned } from "../heco/common";
+import { existPair, getPairContract, getTokenDecimalsByAddr, getTokenNameByAddr, getTokenSymbolByAddr, getTokenTotalSupplyByAddr, isAbandoned } from "./common";
 
 export async function handleSingle(connection: Connection, contractAddr: string, appName: string): Promise<boolean | Pair> {
     //console.log('handleSingle contract: ', contractAddr)

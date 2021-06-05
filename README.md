@@ -49,12 +49,21 @@ node out/test/defi/handle.js updateDefault  --entity  Pair  --name BXH --batch 1
 // Good functioning
 % node out/test/defi/handle.js test --contract 0x23E2ed16Bc4ce3fcab08a5e5d9508ba03F8cF173 --name MDEX
 
+///////////////////////////////////////
 // Change handle.ts CLI new formats
 node out/test/new06/testGetPrice.js
 
+node out/src/adapter/cli/handle.js addDefault  --entity DefiApp
+
+node out/src/adapter/cli/handle.js addDefault  --entity SmartContract
+
+// Init pair database
+node out/src/adapter/cli/handle.js updateDefault  --entity  Pair  --name MDEX --batch 1 --start 0
+node out/src/adapter/cli/handle.js updateDefault  --entity  Pair  --name BXH --batch 1 --start 0
+
 node out/src/adapter/cli/handle.js pairPrice --pool BXH --symbol0 BACK --symbol1 BXH --index 0 --size 10
 
-node out/src/adapter/cli/handle.js pairPriceByTime --pool BXH --symbol0 BACK --symbol1 BXH --start 0 --end 1622787661701
+node out/src/adapter/cli/handle.js pairPriceByTime --pool BXH --symbol0 BACK --symbol1 BXH --start 1622787608635 --end 1622787661701
 
 ```
 
