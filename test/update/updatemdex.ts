@@ -2,7 +2,7 @@ import assert from "assert";
 import { ethers } from "ethers";
 import { Connection } from "typeorm";
 import configJson from "../../secret/config.json"
-import { getTokenDecimals, getTokenName, getTokenSymbol, getTokenTotalSupply } from "../../src/adapter/contract/Token";
+import { getTokenDecimals, getTokenName, getTokenSymbol, getTokenTotalSupply } from "../../src/adapter/heco/contract/Token";
 import MdexFactoryAbi from '../../src/config/IMdexFactory.json'
 import MdexPairAbi from "../../src/config/IMdexPair.json"
 import { DefiApp } from "../../src/entity/DefiApp";

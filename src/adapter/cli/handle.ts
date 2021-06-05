@@ -1,15 +1,12 @@
 import { Connection, createConnection, EntityTarget } from "typeorm";
-import { DefiApp } from "../entity/DefiApp";
+import { DefiApp } from "../../entity/DefiApp";
 import "reflect-metadata";
-import { SmartContract } from "../entity/SmartContract";
-import { Pool } from "../entity/Pool";
-import { Pair } from "../entity/Pair";
+import { SmartContract } from "../../entity/SmartContract";
 import * as yargs from 'yargs';
-import { updateBatchBXHPair } from '../../test/update/updatebxh'
-import { updateBatchMDEXPair } from '../../test/update/updatemdex'
-import { test as handleTest } from '../../test/update/test'
-import { handleUpdateDefaultEntity } from "./cli/updateDefaultEntity";
-import { getClassName, getEntityByName } from "./cli/common";
+import { test as handleTest } from '../../../test/update/test'
+import { handleUpdateDefaultEntity } from "./updateDefaultEntity";
+import { getClassName, getEntityByName } from "../heco/common";
+import { queryPairPriceByPage, queryPairPriceByTime } from "../db/db";
 
 async function toAddApp(connection: Connection, name: string, url: string, desc: string) {
     console.log('toAddApp: ', name)
@@ -141,7 +138,6 @@ async function addApp(conn: Connection) {
 
 }
 
-
 function getRelationByName(name: string): string[] {
     let lowerCase = name.toLowerCase();
 
@@ -169,11 +165,36 @@ async function handleAddDefaultEntity(connection: Connection, entity: string | u
     await addDefaultEntity(connection, getEntityByName(entity as string))
 }
 
+async function handlePairPrice(poolname:string, symbol0:string, symbol1:string, index:number, pageSize:number){
+    let pool =  poolname.toUpperCase();
+    console.log()
+
+    if(pool === 'BXH'){
+        let result = await  queryPairPriceByPage(poolname, symbol0, symbol1, index, pageSize);
+        console.log(result)
+    }else if(pool === "MDEX"){
+        console.error("Unhandled pool:", poolname)
+    }else{
+        console.error("Unknown pool:", poolname)
+    }
+}
+async function handlePairPriceByTime(poolname:string, symbol0:string, symbol1:string, start:number, end:number){
+    let pool =  poolname.toUpperCase();
+    console.log()
+
+    if(pool === 'BXH'){
+        let result = await  queryPairPriceByTime(poolname, symbol0, symbol1, start, end);
+        console.log(result)
+    }else if(pool === "MDEX"){
+        console.error("Unhandled pool:", poolname)
+    }else{
+        console.error("Unknown pool:", poolname)
+    }
+}
+
 async function main() {
     // console.log('defi mdex')
     const conn = await createConnection();
-
-
 
     // await toAddContract(conn, 'MDEX', '0xED7d5F38C79115ca12fe6C0041abb22F0A06C300','MdexRouter','MdexRouter')
 
@@ -248,7 +269,6 @@ async function main() {
             console.log('UpdateDefault ', argv.entity, argv.name)
             handleUpdateDefaultEntity(conn, argv.entity, argv.name, argv.batch, argv.start)
         }
-
     })
 
     yargs.command({
@@ -304,6 +324,81 @@ async function main() {
             handleReadEntity(conn, argv.entity);
         }
 
+    })
+
+    yargs.command({
+        command: 'pairPrice',
+        describe: 'pairPrice command',
+        builder: {
+            pool: {
+                describe: 'pool name',
+                demandOption: true,
+                type: 'string'
+            },
+            symbol0:{
+                describe: 'symbol0 name',
+                demandOption: true,
+                type: 'string'
+            },
+            symbol1:{
+                describe: 'symbol1 name',
+                demandOption: true,
+                type: 'string'
+            },
+            index:{
+                describe: 'page index',
+                demandOption: true,
+                type: 'number'
+            },
+            size:{
+                describe: 'page size',
+                demandOption: true,
+                type: 'number'
+            }
+        },
+        handler(argv) {
+            console.log('List Pair Price', argv.pool)
+            handlePairPrice(argv.pool as string, argv.symbol0 as string, argv.symbol1 as string, argv.index as number, argv.size as number);
+            
+        }
+    })
+
+
+    yargs.command({
+        command: 'pairPriceByTime',
+        describe: 'pairPriceByTime command',
+        builder: {
+            pool: {
+                describe: 'pool name',
+                demandOption: true,
+                type: 'string'
+            },
+            symbol0:{
+                describe: 'symbol0 name',
+                demandOption: true,
+                type: 'string'
+            },
+            symbol1:{
+                describe: 'symbol1 name',
+                demandOption: true,
+                type: 'string'
+            },
+            start:{
+                describe: 'start time',
+                demandOption: true,
+                type: 'number'
+            },
+            end:{
+                describe: 'end time',
+                demandOption: true,
+                type: 'number'
+            }
+        },
+        handler(argv) {
+            console.log('List Pair Price', argv.pool)
+            handlePairPriceByTime(argv.pool as string, argv.symbol0 as string, argv.symbol1 as string, argv.start as number, argv.end as number);
+            
+        }
     })
 
     yargs.command({

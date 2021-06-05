@@ -1,5 +1,5 @@
 import { Connection, EntityTarget } from "typeorm"
-import { getClassName, getEntityByName } from "./common";
+import { getClassName, getEntityByName } from "../heco/common";
 import { updateBatchBXHPair } from "./updateBxh";
 import { updateBatchMDEXPair } from "./updateMdex";
 

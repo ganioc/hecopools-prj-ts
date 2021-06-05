@@ -1,7 +1,6 @@
 import { ethers } from "ethers"
 import { Connection } from "typeorm"
-import { updateBatchPair } from "./common"
-import { walletProvider} from "./common"
+import { updateBatchPair, walletProvider } from "../heco/common"
 import V2FactoryAbi from "../../config/UniswapV2Factory.json"
 
 const addrFactory = "0xe0367ec2bd4Ba22B1593E4fEFcB91D29DE6C512a"

@@ -5,7 +5,7 @@ import { Pair } from "../../src/entity/Pair"
 import configJson from "../../secret/config.json"
 import MdexPairAbi from "../../src/config/IMdexPair.json"
 import Abandoned from '../../src/config/abandonToken.json'
-import { getTokenName as tokenGetTokenName, getTokenDecimals as tokenGetTokenDecimals, getTokenSymbol as tokenGetTokenSymbol, getTokenTotalSupply as tokenGetTokenTotalSupply } from '../../src/adapter/contract/Token'
+import { getTokenName as tokenGetTokenName, getTokenDecimals as tokenGetTokenDecimals, getTokenSymbol as tokenGetTokenSymbol, getTokenTotalSupply as tokenGetTokenTotalSupply } from '../../src/adapter/heco/contract/Token'
 import BigNumber from "bignumber.js"
 import { updateSingleByIndex } from "./updateSingle"
 import { DelayMs } from "../../src/utils"
@@ -21,10 +21,8 @@ if (process.env.WHEREAMI === 'Hongkong') {
     chainUrl = "https://http-mainnet.hecochain.com"
 }
 
-
 const provider = new ethers.providers.JsonRpcProvider(chainUrl);
 export const walletProvider = new ethers.Wallet(configJson.secret, provider)
-
 
 export async function existPair(connection: Connection, pairAddr: string, app: DefiApp): Promise<boolean> {
     let pairFind = await connection
@@ -111,7 +109,7 @@ export async function getPair(symbol0: string, symbol1: string, poolname: string
         .getOne()
 }
 export async function getPairPrice(symbol0: string, symbol1: string, poolname: string) {
-    console.log('getPairPrice()')
+    console.log('\ngetPairPrice()')
     const pair = await getPair(symbol0, symbol1, poolname)
     const contract = getPairContract(pair.address)
 

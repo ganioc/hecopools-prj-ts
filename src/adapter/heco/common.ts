@@ -1,5 +1,6 @@
+// This file is about query the Heco Chain
 import { ethers } from "ethers";
-import { Connection, EntityTarget } from "typeorm";
+import { Connection, EntityTarget, getConnection } from "typeorm";
 import { Pair } from "../../entity/Pair";
 import { Pool } from "../../entity/Pool";
 import { SmartContract } from "../../entity/SmartContract";
@@ -8,10 +9,10 @@ import { DelayMs } from "../../utils";
 import {strict as assert} from "assert";
 import MdexPairAbi from "../../config/IMdexPair.json"
 import AbandonedList from '../../config/abandonToken.json'
-import { getTokenDecimals, getTokenName, getTokenSymbol, getTokenTotalSupply } from "../contract/Token";
+import { getTokenDecimals, getTokenName, getTokenSymbol, getTokenTotalSupply } from "./contract/Token";
 import { DefiApp } from "../../entity/DefiApp";
-import { updateSingleByIndex } from "./updateSingle";
-
+import { updateSingleByIndex } from "../cli/updateSingle";
+import BigNumber from "bignumber.js"
 
 require('custom-env').env()
     
@@ -48,6 +49,25 @@ export async function getTokenTotalSupplyByAddr(tokenAddr: string) {
 }
 
 
+export async function getPair(symbol0: string, symbol1: string, poolname: string) {
+    const conn = getConnection();
+
+    const repos = conn.getRepository(Pair);
+
+    const app = await conn
+        .getRepository(DefiApp)
+        .findOne(poolname)
+
+    return repos
+        .createQueryBuilder("pair")
+        .leftJoinAndSelect("pair.defiApp", "defiApp")
+        .where({
+            token0Symbol: symbol0,
+            token1Symbol: symbol1,
+            defiApp: app
+        })
+        .getOne()
+}
 
 export function getClassName<Type>(target: EntityTarget<Type>): string {
     return target.toString().split(' ')[1]
@@ -131,5 +151,39 @@ export async function updateBatchPair(connection: Connection, name: string, star
                 console.log(e)
             })
         await DelayMs(1000)
+    }
+}
+
+// To Read Pair Price
+export async function getPairPrice(symbol0: string, symbol1: string, poolname: string) {
+    console.log('\ngetPairPrice()')
+    const pair = await getPair(symbol0, symbol1, poolname)
+    const contract = getPairContract(pair.address)
+
+    let result = await contract.getReserves()
+    // console.log(result)
+    // console.log(result.reserve0.toString())
+    // console.log(result.reserve1.toString())
+
+    let amount0 = new BigNumber(result.reserve0.toString())
+    console.log("amount0: ", amount0.toString())
+    console.log("decimals", pair.token0Decimals)
+
+    let amount1 = new BigNumber(result.reserve1.toString())
+    console.log("amount1: ", amount1.toString())
+    console.log("decimals", pair.token1Decimals)
+
+    let price0 = amount1.div(amount0)
+    //console.log("price0:", price0.toString())
+
+    let price1 = amount0.div(amount1)
+    //console.log("price1:", price1.toString())
+
+    return {
+        token0: pair.token0Symbol,
+        token1: pair.token1Symbol,
+        price0: price0.toNumber(),
+        price1: price1.toNumber(),
+        timestamp: new Date().getTime()
     }
 }

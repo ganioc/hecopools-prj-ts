@@ -3,7 +3,7 @@ import { Connection } from "typeorm";
 import { DefiApp } from "../../src/entity/DefiApp";
 import V2FactoryAbi from "../../src/config/UniswapV2Factory.json"
 import V2PairAbi from "../../src/config/IUniswapV2Pair.json"
-import { getTokenDecimals, getTokenName, getTokenSymbol, getTokenTotalSupply } from "../../src/adapter/contract/Token";
+import { getTokenDecimals, getTokenName, getTokenSymbol, getTokenTotalSupply } from "../../src/adapter/heco/contract/Token";
 import configJson from "../../secret/config.json"
 import { strict as assert } from 'assert'
 import { Pair } from "../../src/entity/Pair";

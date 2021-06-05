@@ -1,6 +1,6 @@
 import { ethers } from "ethers"
 import { Connection } from "typeorm"
-import { updateBatchPair, walletProvider } from "./common"
+import { updateBatchPair, walletProvider } from "../heco/common"
 import MdexFactoryAbi from '../../config/IMdexFactory.json'
 
 const addrFactory = "0xb0b670fc1F7724119963018DB0BfA86aDb22d941"

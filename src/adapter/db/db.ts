@@ -2,9 +2,8 @@ import { getConnection } from "typeorm";
 import { Anchor } from "../../entity/Anchor";
 import { Price } from "../../entity/Price";
 
-
 export async function getAnchor(poolname: string, symbol0: string, symbol1: string) {
-    // find the anchor,
+    // find the anchor
     const conn = getConnection();
     const reposAnchor = conn.getRepository(Anchor);
 
@@ -40,6 +39,7 @@ export async function saveAnchorPrice(anchor:Anchor,  price: number) {
     return reposPrice.save(mPrice);
 }
 export async function savePrice(poolname: string, symbol0: string, symbol1: string, price: number) {
+    console.log("\nsavePrice()", symbol0, symbol1,price)
     // find the anchor,
     const conn = getConnection();
     const reposPrice = conn.getRepository(Price);
@@ -56,4 +56,51 @@ export async function savePrice(poolname: string, symbol0: string, symbol1: stri
     mPrice.timestamp = new Date().getTime();
 
     return reposPrice.save(mPrice);
+}
+
+// Query Pair price 
+
+export async function queryPairPriceByPage(poolname:string, symbol0:string, symbol1:string, index:number, pageSize:number){
+    console.log("queryPairPriceByPage", poolname)
+    let connection = getConnection();
+
+    // get Anchor
+    let anchor = await getAnchor(poolname,symbol0,symbol1);
+    if(!anchor){
+        return null;
+    }
+
+    // get Prices
+    return  connection.getRepository(Price)
+        .createQueryBuilder("price")
+        .leftJoinAndSelect("price.anchor","anchor")
+        .where({
+            anchor: anchor
+        })
+        .skip(index)
+        .take(pageSize)
+        .getMany();
+
+}
+export async function queryPairPriceByTime(poolname:string, symbol0:string, symbol1:string, start:number, end:number){
+    console.log("queryPairPriceByTime", poolname)
+    let connection = getConnection();
+
+    // get Anchor
+    let anchor = await getAnchor(poolname,symbol0,symbol1);
+    if(!anchor){
+        return null;
+    }
+
+    // get Prices
+    return  connection.getRepository(Price)
+        .createQueryBuilder("price")
+        .leftJoinAndSelect("price.anchor","anchor")
+        .where({
+            anchor: anchor
+        })
+        .andWhere("price.timestamp > :start",{start:start})
+        .andWhere("price.timestamp < :end", {end:end})
+        .getMany();
+
 }
