@@ -7,6 +7,7 @@ import { test as handleTest } from '../../../test/update/test'
 import { handleUpdateDefaultEntity } from "./updateDefaultEntity";
 import { getClassName, getEntityByName } from "../heco/common";
 import { queryPairPriceByPage, queryPairPriceByTime } from "../db/db";
+import { Price } from "../../entity/Price";
 
 async function toAddApp(connection: Connection, name: string, url: string, desc: string) {
     console.log('toAddApp: ', name)
@@ -185,6 +186,49 @@ async function handlePairPriceByTime(poolname:string, symbol0:string, symbol1:st
     if(pool === 'BXH'){
         let result = await  queryPairPriceByTime(poolname, symbol0, symbol1, start, end);
         console.log(result)
+    }else if(pool === "MDEX"){
+        console.error("Unhandled pool:", poolname)
+    }else{
+        console.error("Unknown pool:", poolname)
+    }
+}
+async function handlePairPriceCompByTime(poolname:string, symbol0:string, symbol1:string, start:number, end:number){
+    let pool =  poolname.toUpperCase();
+    console.log()
+
+    if(pool === 'BXH'){
+        let result = await  queryPairPriceByTime(poolname, symbol0, symbol1, start, end);
+        // console.log(result)
+        console.log("length:", result.length)
+        if(result){
+            // average
+            let sum = 0;
+            let max = result.reduce((prev,curr)=>{
+                sum+= curr.value;
+                if(prev.value < curr.value){
+                    return curr;
+                }else{
+                    return prev
+                }
+            })
+            let min = result.reduce((prev,curr)=>{
+                if(prev.value > curr.value){
+                    return curr;
+                }else{
+                    return prev;
+                }
+            })
+            let average =  sum / result.length;
+            console.log("avg:",average)
+
+            // max
+            console.log("max:", max.value, new Date(max.timestamp))
+
+            // min
+            console.log("min:", min.value, new Date(min.timestamp))
+        }
+
+
     }else if(pool === "MDEX"){
         console.error("Unhandled pool:", poolname)
     }else{
@@ -402,6 +446,43 @@ async function main() {
         handler(argv) {
             console.log('List Pair Price', argv.pool)
             handlePairPriceByTime(argv.pool as string, argv.symbol0 as string, argv.symbol1 as string, argv.start as number, argv.end as number);
+            
+        }
+    })
+
+    yargs.command({
+        command: 'pairPriceCompByTime',
+        describe: 'pairPriceCompByTime command',
+        builder: {
+            pool: {
+                describe: 'pool name',
+                demandOption: true,
+                type: 'string'
+            },
+            symbol0:{
+                describe: 'symbol0 name',
+                demandOption: true,
+                type: 'string'
+            },
+            symbol1:{
+                describe: 'symbol1 name',
+                demandOption: true,
+                type: 'string'
+            },
+            start:{
+                describe: 'start time',
+                demandOption: true,
+                type: 'number'
+            },
+            end:{
+                describe: 'end time',
+                demandOption: true,
+                type: 'number'
+            }
+        },
+        handler(argv) {
+            console.log('List Pair Price', argv.pool)
+            handlePairPriceCompByTime(argv.pool as string, argv.symbol0 as string, argv.symbol1 as string, argv.start as number, argv.end as number);
             
         }
     })

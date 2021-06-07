@@ -10,7 +10,6 @@ async function main(){
     async function func(){
         console.log("\n----------------------")
 
-
         await DelayMs(1000);
 
         let result = await BACK2BXH_price();
